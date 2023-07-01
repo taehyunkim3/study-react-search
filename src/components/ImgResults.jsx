@@ -36,14 +36,21 @@ const ResultBox = styled.div`
     font-weight: 700;
   }
   &:hover {
-    transform: scale(1.2);
+    transform: scale(2);
+
+    background-image: url(${(props) => props.hoveredURL});
   }
 `;
-//아래 이거 넣으면 경고창을 무시함.
+//아래 이거 넣으면 경고창을 무시함. TypeScript 써야할듯.
 // eslint-disable-next-line react/prop-types
 const ImgResults = ({ a }) => {
   return (
-    <ResultBox imgURL={a.thumbnail_url}>
+    <ResultBox
+      imgURL={a.thumbnail_url}
+      hoveredURL={a.image_url}
+      height={a.height}
+      width={a.width}
+    >
       <a href={a.doc_url}>
         <p>{a.display_sitename} </p>
         {/* <img src={a.thumbnail_url} /> */}
