@@ -4,6 +4,7 @@ import Logo from "./Logo";
 import Footer from "./Footer";
 
 import { styled } from "styled-components";
+import { useState } from "react";
 const RootContainer = styled.div`
   width: 100%;
   min-height: 100vh;
@@ -12,11 +13,12 @@ const RootContainer = styled.div`
   line-height: 120%;
 `;
 function Root() {
+  const [category, setCategory] = useState("web");
   return (
     <RootContainer>
-      <TopBar />
+      <TopBar setCategory={setCategory} />
       <Logo />
-      <Search />
+      <Search category={category} />
       <Footer />
     </RootContainer>
   );

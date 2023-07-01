@@ -26,14 +26,23 @@ const ArticleSelect = styled.select`
     border: none;
   }
 `;
-const TopBar = () => {
+const TopBar = ({ setCategory }) => {
   return (
     //
     <TopBarContainer>
-      <ArticleSelect>
-        <option value>All Articles</option>
-        <option value="value1">value1</option>
-        <option value="value2">value2</option>
+      <ArticleSelect
+        onChange={(e) => {
+          setCategory(e.target.value);
+        }}
+      >
+        <option>검색 분야 선택</option>
+        <option value="web">웹 검색</option>
+        {/* <option value="vclip">비디오</option> */}
+        <option value="image">이미지</option>
+        {/* <option value="blog">블로그</option> */}
+        {/* <option value="blog">블로그</option>
+        <option value="blog">블로그</option>
+        <option value="blog">블로그</option> */}
       </ArticleSelect>
       <IconBox>
         <FontAwesomeIcon icon={faEllipsis} />
