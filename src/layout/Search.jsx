@@ -19,11 +19,9 @@ const SearchContainer = styled.div`
   padding-left: 20px;
   justify-content: flex-start;
   align-items: center;
-  border: 2px dotted red;
 `;
 
 const SearchForm = styled.div`
-  border: 2px dotted blue;
   display: flex;
   margin-bottom: 0px;
   align-items: center;
