@@ -3,6 +3,7 @@ import { faEllipsis, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const TopBarContainer = styled.div`
+  padding: 30px;
   position: relative;
   display: flex;
   justify-content: space-between;

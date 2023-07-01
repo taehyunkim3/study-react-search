@@ -2,7 +2,7 @@ import { styled } from "styled-components";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const SearchContainer = styled.div`
   overflow: hidden;
@@ -53,11 +53,22 @@ const Input = styled.input`
   }
 `;
 
+const SearchResults = styled.div`
+  padding: 40px;
+`;
+
 const Search = () => {
   // const API_URL = process.env.REACT_APP_KAKAO_REST_API_KEY;  이건 CRA에서나 통함.
   const API_KEY = import.meta.env.VITE_KAKAO_REST_API_KEY; //vite용
   const [result, setResult] = useState([]);
+  const [meta, setMeta] = useState({});
   const [input, setInput] = useState("");
+  const [page, setPage] = useState(1);
+  const [category, setCategory] = useState("web");
+  const [loading, setLoading] = useState(false);
+  const [totalPage, setTotalPage] = useState(0);
+  const [isEnd, setIsEnd] = useState(false);
+  const resultPerPage = 10;
 
   const onChange = useCallback(
     (e) => {
@@ -67,20 +78,42 @@ const Search = () => {
   );
   //
   const fetchResult = async () => {
-    const { data } = await axios.get(`https://dapi.kakao.com/v2/search/web`, {
-      headers: {
-        Authorization: `KakaoAK ${API_KEY}`,
-      },
-      params: { query: `${input}` }, //쿼리 양식이 계속 틀려서 한참 걸림. 순서랑 괄호 위치 숙지
-    });
+    setLoading(true);
+    const { data } = await axios.get(
+      `https://dapi.kakao.com/v2/search/${category}`,
+      {
+        headers: {
+          Authorization: `KakaoAK ${API_KEY}`,
+        },
+        params: { query: `${input}`, page: `${page}` }, //쿼리 양식이 계속 틀려서 한참 걸림. 순서랑 괄호 위치 숙지
+      }
+    );
     console.log(data);
+    setMeta(data.meta); // 페이지 번호, 마지막 페이지 정보
     setResult(data.documents);
+    setLoading(false);
+    // console.log(meta.pageable_count);   undefined 나옴 ㅠㅠ
+    // meta.pageable_count > 50
+    //   ? setTotalPage(50)
+    //   : setTotalPage(meta.pageable_count);
   };
+  //
+  useEffect(() => {
+    if (meta.pageable_count !== undefined) {
+      console.log(meta.pageable_count);
+      meta.pageable_count >= 50 * resultPerPage
+        ? setTotalPage(50)
+        : setTotalPage(meta.pageable_count / resultPerPage);
+    }
+  }, [meta.pageable_count, result]);
   //
   const onSubmit = useCallback(
     (e) => {
       e.preventDefault(); //철자유의 e.prevent.default 아님.
-      fetchResult();
+      if (input !== "") {
+        //빈검색 방지
+        fetchResult();
+      }
 
       //즉시호출함수 대신 위로빼줌.
       // (async () => {
@@ -104,6 +137,12 @@ const Search = () => {
     },
     [input]
   );
+  useEffect(() => {
+    if (input !== "") {
+      fetchResult(); //400에러나는거 방지용
+    }
+    setLoading(false);
+  }, [page, category]);
 
   return (
     <>
@@ -122,15 +161,33 @@ const Search = () => {
           </form>
         </SearchForm>
       </SearchContainer>
-      {result.map((a, i) => {
-        return (
-          <div key={i}>
-            <a href={a.url} dangerouslySetInnerHTML={{ __html: a.title }}></a>
-            {/* 이거 위험하다고 하는거 안해주면 b태그가 안없어져서 일단 이렇게 해둠. 정규식으로 제거후 가공 필요 */}
-            <h3 dangerouslySetInnerHTML={{ __html: a.contents }}></h3>
-          </div>
-        );
-      })}
+      <SearchResults>
+        {loading || result == "" ? null : (
+          <p>
+            [노출결과수 : {meta.pageable_count} 총 결과수 : {meta.total_count}]
+          </p>
+        )}
+
+        {loading ? <h1>로딩중</h1> : null}
+        {result.map((a, i) => {
+          return (
+            <div key={i}>
+              <a href={a.url} dangerouslySetInnerHTML={{ __html: a.title }}></a>
+              {/* dangerously... b태그가 안없어져서 일단 이렇게 해둠. 정규식으로 제거후 가공 필요 */}
+              <h3 dangerouslySetInnerHTML={{ __html: a.contents }}></h3>
+            </div>
+          );
+        })}
+        {}
+        {Array.from({ length: totalPage }).map((_, i) => {
+          if (i + 1 == page) return <span key={i}>{i + 1}</span>;
+          return (
+            <button key={i} onClick={() => setPage(i + 1)}>
+              {i + 1}
+            </button>
+          );
+        })}
+      </SearchResults>
     </>
   );
 };

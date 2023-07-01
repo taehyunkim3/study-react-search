@@ -1,12 +1,12 @@
 import "./App.css";
-import Footer from "./layout/Footer";
+// import Footer from "./layout/Footer";
 import Root from "./layout/Root";
 
 function App() {
   return (
     <>
       <Root />
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

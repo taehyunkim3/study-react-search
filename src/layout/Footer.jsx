@@ -1,7 +1,6 @@
 import { styled } from "styled-components";
 
 const FooterContainer = styled.footer`
-  position: fixed;
   left: 0%;
   top: auto;
   right: 0%;
@@ -18,8 +17,8 @@ const FooterContainer = styled.footer`
 const Footer = () => {
   return (
     <FooterContainer>
-      <p>Made by ~~~~ / React Study</p>
-      <p>Powered by ~~~~~</p>
+      <p>Made by TaehyunKim / React Study</p>
+      <p>Powered by React, KakaoAPI</p>
     </FooterContainer>
   );
 };
