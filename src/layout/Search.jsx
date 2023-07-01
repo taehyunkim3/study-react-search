@@ -49,7 +49,7 @@ const Search = () => {
       <SearchForm>
         <form>
           <FontAwesomeIcon icon={faMagnifyingGlass} />
-          <Input placeholder="여기 입력하세요....🫠"></Input>
+          <Input placeholder="   여기 입력하세요....🫠"></Input>
         </form>
       </SearchForm>
     </SearchContainer>
